@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bravo_smtp/src/models/body.dart';
 import 'package:dio/dio.dart';
 
@@ -16,32 +18,15 @@ class SmtpService {
           ),
         );
 
-  Future<bool> sendEMAIL(Body body) async {
+  Future<void> sendEMAIL(Body body) async {
     try {
-      _dio.post('/smtp/email', data: body.toJson());
-      return true;
-    } catch (e) {
-      print(e);
-      return false;
+      await _dio.post('/smtp/email', data: json.encode(body.toJson()));
+    } on DioException catch (e) {
+      print(e.response);
     }
   }
+
+  Future<UnimplementedError> sendTemplateEMAIL() async {
+    return UnimplementedError();
+  }
 }
-/* curl --request POST \
-  --url https://api.brevo.com/v3/smtp/email \
-  --header 'accept: application/json' \
-  --header 'api-key:YOUR_API_KEY' \
-  --header 'content-type: application/json' \
-  --data '{  
-   "sender":{  
-      "name":"Sender Alex",
-      "email":"senderalex@example.com"
-   },
-   "to":[  
-      {  
-         "email":"testmail@example.com",
-         "name":"John Doe"
-      }
-   ],
-   "subject":"Hello world",
-   "htmlContent":"<html><head></head><body><p>Hello,</p>This is my first transactional email sent from Brevo.</p></body></html>"
-}' */

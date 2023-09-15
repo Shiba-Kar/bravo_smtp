@@ -14,7 +14,11 @@ class BravoSMTP {
 
   Future<bool> sendEMAIL(Body body) async {
     _smtpService = SmtpService(apiKey);
-
-    return await _smtpService.sendEMAIL(body);
+    try {
+      await _smtpService.sendEMAIL(body);
+      return true;
+    } catch (_) {
+      return false;
+    }
   }
 }
